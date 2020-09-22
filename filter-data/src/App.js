@@ -13,11 +13,11 @@ const Styles = styled.div`
   flex-direction: column;
   margin: auto;
   padding: 1rem;
-
+  
   table {
     border-spacing: 0;
     border: 1px solid black;
-
+    
     tr {
       :last-child {
         td {
@@ -25,8 +25,9 @@ const Styles = styled.div`
         }
       }
     }
-
+    
     th {
+      text-align: start;
       margin: 0;
       padding: 0.5rem;
       border-bottom: 1px solid black;
@@ -58,23 +59,6 @@ const Styles = styled.div`
   }
 `
 
-const IndeterminateCheckbox = React.forwardRef(
-  ({ indeterminate, ...rest }, ref) => {
-    const defaultRef = React.useRef()
-    const resolvedRef = ref || defaultRef
-
-    React.useEffect(() => {
-      resolvedRef.current.indeterminate = indeterminate
-    }, [resolvedRef, indeterminate])
-
-    return (
-      <>
-        <input type="checkbox" ref={resolvedRef} {...rest} />
-      </>
-    )
-  }
-)
-
 const createData = (data) => {
   let dataArray = [];
   
@@ -102,30 +86,6 @@ function Table({ columns: userColumns, data, renderRowSubComponent }) {
       data
     },
     useExpanded, // Use the useExpanded plugin hook
-    useRowSelect,
-    hooks => {
-      hooks.visibleColumns.push(columns => [
-        // Let's make a column for selection
-        {
-          id: 'selection',
-          // The header can use the table's getToggleAllRowsSelectedProps method
-          // to render a checkbox
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            </div>
-          ),
-          // The cell can use the individual row's getToggleRowSelectedProps method
-          // to the render a checkbox
-          Cell: ({ row }) => (
-            <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-            </div>
-          ),
-        },
-        ...columns,
-      ])
-    }
   );
 
   return (
@@ -178,21 +138,8 @@ function Table({ columns: userColumns, data, renderRowSubComponent }) {
         </tbody>
     </table>
     <br />
-    <p>Selected Rows: {Object.keys(selectedRowIds).length}</p>
-      <pre>
-        <code>
-          {JSON.stringify(
-            {
-              selectedRowIds: selectedRowIds,
-              'selectedFlatRows[].original': selectedFlatRows.map(
-                d => d.original
-              ),
-            },
-            null,
-            2
-          )}
-          {/* {console.log("Selected Rows: ", Object.keys(selectedRowIds).length)} */}
-      </code>
+    <pre>
+      <code>{JSON.stringify({ expanded: expanded }, null, 2)}</code>
     </pre>
     </>
   )
