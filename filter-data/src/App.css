@@ -1,13 +1,13 @@
 .App {
   margin: auto;
-  width: 75%;
-  font-size: 1.6rem;
+  width: 60%;
+  /* font-size: 1.6rem; */
   padding: 1rem 1rem 1rem;
 }
 
 * {
-  /* box-sizing: border-box;
-  max-width: 100%; */
+  /* text-align: center; */
+  box-sizing: border-box;
   /* outline: 1px solid red;
   outline-offset: -1px; */
 }
