@@ -68,3 +68,17 @@ export const filterData2= [
     ]
   }
 ]
+
+export const filterData3 = [
+  {
+  "fields": [
+    {
+      "name": "Website",
+      "value": "http://www.bradfordsoap.com/"
+    },
+    {
+      "name": "Image",
+      "value": "https://imgur.com/a/VIMSHS8?"
+    },
+  ],
+}]
