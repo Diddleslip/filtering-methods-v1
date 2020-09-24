@@ -61,5 +61,5 @@ import DeleteIcon from "@material-ui/icons/Delete";
 https://material-ui.com/components/tables/`
 
 `
-https://www.npmjs.com/package/react-alice-carousel
+https://material-ui.com/components/material-icons/
 `
