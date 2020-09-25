@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Collapse from "@material-ui/core/Collapse";
@@ -16,6 +16,7 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 const useRowStyles = makeStyles({
   root: {
@@ -268,8 +269,10 @@ const filterData2 = [
 
 export default function CollapsibleTable() {
   const pages = [3, 5, 10];
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(pages[page]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
+  const [order, setOrder] = useState();
+  const [orderBy, setOrderBy] = useState();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -281,36 +284,39 @@ export default function CollapsibleTable() {
   };
 
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>Name</TableCell>
-            <TableCell align="right">Type</TableCell>
-            <TableCell align="right">Latitude&nbsp;</TableCell>
-            <TableCell align="right">Longitude&nbsp;</TableCell>
-            <TableCell colSpan="2" align="center">
-              Actions&nbsp;
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {filterData2
-            .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
-            .map((row) => (
-              <Row key={row.id} row={row} />
-            ))}
-        </TableBody>
+    <div>
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell>Name</TableCell>
+              <TableCell align="right">Type</TableCell>
+              <TableCell align="right">Latitude&nbsp;</TableCell>
+              <TableCell align="right">Longitude&nbsp;</TableCell>
+              <TableCell colSpan="2" align="center">
+                Actions&nbsp;
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filterData2
+              .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+              .map((row) => (
+                <Row key={row.id} row={row} />
+              ))}
+          </TableBody>
+        </Table>
         <TablePagination
           page={page}
+          component="div"
           rowsPerPageOptions={pages}
           rowsPerPage={rowsPerPage}
           count={filterData2.length}
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
-      </Table>
-    </TableContainer>
+      </TableContainer>
+    </div>
   );
 }
