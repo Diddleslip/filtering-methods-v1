@@ -252,11 +252,11 @@ const useRowStyles = makeStyles({
 
 function Row(props) {
   const { row } = props;
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const classes = useRowStyles();
 
   return (
-    <React.Fragment>
+    <Fragment>
       <TableRow className={classes.root}>
         <TableCell>
           <IconButton
@@ -306,9 +306,9 @@ function Row(props) {
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow style={{ background: '#deffde' }}>
-                    <TableCell className={classes.lightBold}>NAME</TableCell>
-                    <TableCell className={classes.lightBold}>VALUE</TableCell>
-                    <TableCell className={classes.lightBold}>ACTIONS</TableCell>
+                    <TableCell className={classes.lightBold}>Name</TableCell>
+                    <TableCell className={classes.lightBold}>Value</TableCell>
+                    <TableCell className={classes.lightBold}>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -337,7 +337,7 @@ function Row(props) {
           </Collapse>
         </TableCell>
       </TableRow>
-    </React.Fragment>
+    </Fragment>
   );
 }
 
