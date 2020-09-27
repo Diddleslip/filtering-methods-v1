@@ -1,8 +1,14 @@
 import React, { useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
-import { lighten, makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
+import {
+  fade,
+  lighten,
+  ThemeProvider,
+  withStyles,
+  makeStyles,
+  createMuiTheme,
+} from '@material-ui/core/styles';import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -25,219 +31,33 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import CheckIcon from '@material-ui/icons/Check';
+import TextField from '@material-ui/core/TextField';
+import { green } from '@material-ui/core/colors';
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_RECORDS, UPDATE_RECORD } from "./QueriesMutations/RecordsGQL";
 
-
-const filterData2 = [
-  {
-    "id": "RecordId1",
-    "name": "Bradford Soap Works",
-    "type": {
-      "name": "Manufacturing Partners"
+const CssTextField = withStyles({
+  root: {
+    '& label.Mui-focused': {
+      color: 'green',
     },
-    "coordinates": {
-      "latitude": 41.715078,
-      "longitude": -71.510541
+    '& .MuiInput-underline:after': {
+      borderBottomColor: 'green',
     },
-    "fields": [
-      {
-        "name": "Website",
-        "value": "http://www.bradfordsoap.com/"
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'red',
       },
-      {
-        "name": "Image",
-        "value": "https://drive.google.com/uc?id=1guusykr1Sr6OciyvGMdls6BN70C4HFD7"
-      }
-    ]
+      '&:hover fieldset': {
+        borderColor: 'yellow',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: 'green',
+      },
+    },
   },
-  {
-    "id": "RecordId2",
-    "name": "Unilever",
-    "type": {
-      "name": "Manufacturing Partners"
-    },
-    "coordinates": {
-      "latitude": 51.511327,
-      "longitude": -0.10439
-    },
-    "fields": [
-      {
-        "name": "Website",
-        "value": "https://unilever.com/"
-      },
-      {
-        "name": "Image",
-        "value": "https://drive.google.com/uc?id=132zeCXLOXvWJv9t2iXKXwAyaEzv-CvO6"
-      },
-      {
-        "name": "Image",
-        "value": "https://drive.google.com/uc?id=1L1EtgTx6Mo-IF3zUeHcdwAXQTh5OLds-"
-      },
-      {
-        "name": "Image",
-        "value": "https://drive.google.com/uc?id=1XZV1CMEG5ex5_prpHJP8Eo8HZsOUT6wv"
-      },
-      {
-        "name": "Image",
-        "value": "https://drive.google.com/uc?id=1P_Qd8CdY9BSoEr-bfQJWpD_9_Mst9JoF"
-      },
-      {
-        "name": "Image",
-        "value": "https://drive.google.com/uc?id=1vMj3T96QCzcSg8CXVZ4sh0kUWhXAnGAN"
-      }
-    ]
-  },
-  {
-    "id": "RecordId3",
-    "name": "Hunter Amenities",
-    "type": {
-      "name": "Manufacturing Partners"
-    },
-    "coordinates": {
-      "latitude": 43.381225,
-      "longitude": -79.78313
-    },
-    "fields": [
-      {
-        "name": "Website",
-        "value": "https://www.hunteramenities.com/"
-      }
-    ]
-  },
-  {
-    "id": "RecordId4",
-    "name": "PSG Holdings",
-    "type": {
-      "name": "Manufacturing Partners"
-    },
-    "coordinates": {
-      "latitude": -33.939862,
-      "longitude": 151.196746
-    },
-    "fields": [
-      {
-        "name": "Website",
-        "value": "https://www.psgholdings.com.au/"
-      }
-    ]
-  },
-  {
-    "id": "RecordId5",
-    "name": "Gojo Industries, Inc.",
-    "type": {
-      "name": "Manufacturing Partners"
-    },
-    "coordinates": {
-      "latitude": 41.175194,
-      "longitude": -81.501463
-    },
-    "fields": [
-      {
-        "name": "Website",
-        "value": "https://www.gojo.com/"
-      }
-    ]
-  },
-  {
-    "id": "RecordId6",
-    "name": "Eco-Soap Bank Siem Reap",
-    "type": {
-      "name": "Eco-Soap Bank Hubs"
-    },
-    "coordinates": {
-      "latitude": 13.349215,
-      "longitude": 103.891303
-    },
-    "fields": [
-      {
-        "name": "Women Employed",
-        "value": "24"
-      },
-      {
-        "name": "Soap Recycled",
-        "value": "374,680 lbs"
-      },
-      {
-        "name": "Image",
-        "value": "https://drive.google.com/uc?id=1wE8RcoUBs0KAPNB7hGnX2puOTZewYVfO"
-      },
-      {
-        "name": "Video",
-        "value": "https://drive.google.com/uc?id=0B74qHrVHeg3rMTk1SWswUWZyMVE"
-      }
-    ]
-  },
-  {
-    "id": "RecordId7",
-    "name": "Eco-Soap Bank Mbabane",
-    "type": {
-      "name": "Eco-Soap Bank Hubs"
-    },
-    "coordinates": {
-      "latitude": -26.293168,
-      "longitude": 31.111064
-    },
-    "fields": [
-      {
-        "name": "Women Employed",
-        "value": "18"
-      },
-      {
-        "name": "Soap Recycled",
-        "value": "120,230 lbs"
-      }
-    ]
-  },
-  {
-    "id": "RecordId8",
-    "name": "Eco-Soap Bank Mombasa",
-    "type": {
-      "name": "Eco-Soap Bank Hubs"
-    },
-    "coordinates": {
-      "latitude": -4.017299,
-      "longitude": 39.624757
-    },
-    "fields": [
-      {
-        "name": "Women Employed",
-        "value": "12"
-      },
-      {
-        "name": "Soap Recycled",
-        "value": "101,670 lbs"
-      }
-    ]
-  },
-  {
-    "id": "RecordId9",
-    "name": "Eco-Soap Bank Luang Prabang",
-    "type": {
-      "name": "Eco-Soap Bank Hubs"
-    },
-    "coordinates": {
-      "latitude": 19.873947,
-      "longitude": 102.13379
-    },
-    "fields": [
-      {
-        "name": "Women Employed",
-        "value": "19"
-      },
-      {
-        "name": "Soap Recycled",
-        "value": "146,250 lbs"
-      },
-      {
-        "name": "Image",
-        "value": "https://drive.google.com/uc?id=0B5O63muqEpojRnh1M0ZKbUxsUEp0R3oydTlEZWpleWxIREsw"
-      },
-      {
-        "name": "Image",
-        "value": "https://drive.google.com/uc?id=0B5O63muqEpojcjJXX2R1d2xIbkdUVGJvZTNpU1JsS3VUcGd3"
-      }
-    ]
-  },
-];
+})(TextField);
 
 const useRowStyles = makeStyles({
   root: {
@@ -252,11 +72,11 @@ const useRowStyles = makeStyles({
 
 function Row(props) {
   const { row } = props;
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const classes = useRowStyles();
 
   return (
-    <React.Fragment>
+    <Fragment>
       <TableRow className={classes.root}>
         <TableCell>
           <IconButton
@@ -276,19 +96,66 @@ function Row(props) {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {row.name}
+          {props.editInfo === row.id  && props.isEdit ? 
+            <TextField 
+              id={props.formData.name} 
+              name="name"
+              label="Name" 
+              variant="outlined"
+              value={props.formData && props.formData.name}
+              onChange={e => props.handleChange(e)}
+            /> : 
+              row.name
+          }
         </TableCell>
-        <TableCell align="center">{row.type.name}</TableCell>
-        <TableCell align="center">{row.coordinates.latitude}</TableCell>
-        <TableCell align="center">{row.coordinates.longitude}</TableCell>
+
+        {/* We can't edit Types so this remains as is */}
+        <TableCell align="center">{row.typeName}</TableCell>
+
         <TableCell align="center">
-          <EditIcon
+          {props.editInfo === row.id  && props.isEdit ? 
+            <TextField 
+              id={props.formData.latitude} 
+              name="latitude"
+              label="latitude" 
+              variant="outlined"
+              value={props.formData && props.formData.latitude}
+              onChange={e => props.handleCoordinatesUpdateChange(e)}
+            /> : 
+              row.latitude
+          }
+        </TableCell>
+        <TableCell align="center">
+          {props.editInfo === row.id  && props.isEdit ? 
+            <TextField 
+              id={props.formData.longitude} 
+              name="longitude"
+              label="Outlined" 
+              variant="outlined"
+              value={props.formData && props.formData.longitude}
+              onChange={e => props.handleCoordinatesUpdateChange(e)}
+            /> : 
+              row.longitude
+          }
+        </TableCell>
+        <TableCell align="center">
+          {props.editInfo === row.id && props.isEdit ? 
+            <CheckIcon
+              style={{ color: '#3BB54A', cursor: 'pointer' }}
+              onClick={(e) => {
+                props.onUpdateSubmit(e)
+                props.setIsEditing(false);
+              }}
+            /> :
+            <EditIcon
             style={{ color: '#3BB54A', cursor: 'pointer' }}
             onClick={() => {
-              props.setRecordUpdateData(row);
-              props.onOpenUpdateModal();
+              props.setIsEditing(true);
+              props.setEditInfo(row.id)
+              props.setFormData(row)
             }}
-          />
+          /> 
+          }
           &nbsp;&nbsp;&nbsp;
           <DeleteIcon
             style={{ color: '#C84E47', cursor: 'pointer' }}
@@ -306,9 +173,9 @@ function Row(props) {
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow style={{ background: '#deffde' }}>
-                    <TableCell className={classes.lightBold}>NAME</TableCell>
-                    <TableCell className={classes.lightBold}>VALUE</TableCell>
-                    <TableCell className={classes.lightBold}>ACTIONS</TableCell>
+                    <TableCell className={classes.lightBold}>Name</TableCell>
+                    <TableCell className={classes.lightBold}>Value</TableCell>
+                    <TableCell className={classes.lightBold}>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -337,7 +204,7 @@ function Row(props) {
           </Collapse>
         </TableCell>
       </TableRow>
-    </React.Fragment>
+    </Fragment>
   );
 }
 
@@ -544,12 +411,20 @@ export default function EnhancedTable() {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
+  const [formData, setFormData] = useState({});
+  const [isEdit, setIsEditing] = useState(false);
+  const [editInfo, setEditInfo] = useState();
   const [schedData, setSchedData] = useState([]);
-  console.log("BYE", schedData);
+
+  const { loading, error, data } = useQuery(GET_RECORDS);
+  const [updateRecord, { mutData2 }] = useMutation(UPDATE_RECORD, {
+    refetchQueries: ['getRecords'],
+  });
+  console.log("THIS IS DATA!", data && data.records)
+
 
   useEffect(() => {
-    const schedData = filterData2.map((record) => {
+    const schedData = data && data.records.map((record) => {
       const { name: typeName } = record.type;
       // make all `details` properties to be accessible
       // on the same level as `status`
@@ -557,7 +432,7 @@ export default function EnhancedTable() {
     });
 
     setSchedData(schedData);
-  }, []);
+  }, [data]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -610,8 +485,41 @@ export default function EnhancedTable() {
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
-    rowsPerPage -
+    schedData && rowsPerPage -
     Math.min(rowsPerPage, schedData.length - page * rowsPerPage);
+
+  // Handles changes for coordinates' fields in UPDATE
+  const handleCoordinatesUpdateChange = event => {
+    setFormData({
+      ...formData,
+      [event.target.name]: parseFloat(event.target.value),
+      // fields: [],
+    });
+    console.log("This is formData ", [formData.fields])
+  };
+
+  const onUpdateSubmit = e => {
+    e.preventDefault();
+    updateRecord({
+      variables: {
+        id: formData.id,
+        name: formData.name,
+        coordinates: {
+          latitude: formData.latitude,
+          longitude: formData.longitude,
+        },
+        fields: [],
+      },
+    });
+  };
+
+  const handleChange = event => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value
+    });
+    console.log("THIS IS NAME", event.target.name)
+  };
 
   return (
     <div className={classes.root}>
@@ -631,10 +539,10 @@ export default function EnhancedTable() {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={schedData.length}
+              rowCount={schedData && schedData.length}
             />
             <TableBody>
-              {stableSort(schedData, getComparator(order, orderBy))
+              {schedData && stableSort(schedData, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.name);
@@ -649,6 +557,16 @@ export default function EnhancedTable() {
                       isItemSelected={isItemSelected} 
                       handleClick={handleClick}
                       labelId={labelId}
+                      editInfo={editInfo}
+                      setEditInfo={setEditInfo}
+                      handleChange={handleChange}
+                      formData={formData}
+                      setFormData={setFormData}
+                      isEdit={isEdit}
+                      setIsEditing={setIsEditing}
+                      updateRecord={updateRecord}
+                      onUpdateSubmit={onUpdateSubmit}
+                      handleCoordinatesUpdateChange={handleCoordinatesUpdateChange}
                     />
                   );
                 })}
@@ -663,7 +581,7 @@ export default function EnhancedTable() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={schedData.length}
+          count={schedData && schedData.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
